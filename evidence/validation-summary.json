@@ -1,0 +1,20 @@
+{
+  "validatedAt": "2026-09-03T15:00:27.503577+00:00",
+  "automatedTestsPassed": 33,
+  "automatedTestsFailed": 0,
+  "cliIntegrationPassed": true,
+  "loadRuns": 15,
+  "successfulLoadTransactions": 1350,
+  "failedLoadTransactions": 0,
+  "rawTransactionReceipts": 1736,
+  "receiptFeeArithmeticVerified": true,
+  "allLoadAccountingReconciled": true,
+  "cpuAndSampledRssVerified": true,
+  "reportPages": 14,
+  "allReportPagesVisuallyReviewed": true,
+  "cleanInstallLinuxPassed": true,
+  "windowsExecutionTested": false,
+  "browserAutomationPerformed": false,
+  "videoIncluded": false,
+  "notes": "Local Ganache evidence. Browser, wallet extension and print interaction checks remain manual; instructions included."
+}

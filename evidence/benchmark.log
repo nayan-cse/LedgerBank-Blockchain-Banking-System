@@ -1,0 +1,17 @@
+Workflow: 20 measured deposits, withdrawals and transfers each, after two warmups per operation.
+N30/C4/R1: 30/30, 11.03 TPS, CPU 49.0% of one core, sampled RSS 321.1 MiB.
+N30/C4/R2: 30/30, 11.55 TPS, CPU 44.9% of one core, sampled RSS 317.0 MiB.
+N30/C4/R3: 30/30, 10.07 TPS, CPU 48.5% of one core, sampled RSS 336.2 MiB.
+N60/C4/R1: 60/60, 11.91 TPS, CPU 42.0% of one core, sampled RSS 319.8 MiB.
+N60/C4/R2: 60/60, 11.06 TPS, CPU 43.0% of one core, sampled RSS 317.2 MiB.
+N60/C4/R3: 60/60, 11.89 TPS, CPU 40.0% of one core, sampled RSS 320.6 MiB.
+N120/C4/R1: 120/120, 11.37 TPS, CPU 39.7% of one core, sampled RSS 331.6 MiB.
+N120/C4/R2: 120/120, 11.52 TPS, CPU 40.9% of one core, sampled RSS 324.9 MiB.
+N120/C4/R3: 120/120, 11.88 TPS, CPU 39.9% of one core, sampled RSS 322.0 MiB.
+N120/C1/R1: 120/120, 3.59 TPS, CPU 19.6% of one core, sampled RSS 321.2 MiB.
+N120/C1/R2: 120/120, 3.61 TPS, CPU 19.7% of one core, sampled RSS 340.4 MiB.
+N120/C1/R3: 120/120, 3.61 TPS, CPU 20.1% of one core, sampled RSS 325.0 MiB.
+N120/C8/R1: 120/120, 17.10 TPS, CPU 57.1% of one core, sampled RSS 336.9 MiB.
+N120/C8/R2: 120/120, 16.59 TPS, CPU 57.2% of one core, sampled RSS 330.8 MiB.
+N120/C8/R3: 120/120, 19.01 TPS, CPU 54.4% of one core, sampled RSS 348.5 MiB.
+Saved 1736 receipts and 15 workload/resource runs.

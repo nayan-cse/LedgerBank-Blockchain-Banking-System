@@ -1,0 +1,43 @@
+{
+  "executedAt": "2026-09-03T14:44:09.299Z",
+  "passed": true,
+  "results": [
+    {
+      "script": "scripts/demo.mjs",
+      "args": [],
+      "exitCode": 0,
+      "stdout": "deposit: 0x29b7121f26c4c650f35a12d2a681a286ca8f5d47bf5562674a1f6c047ee81e4c\ntransfer: 0xdc303475ae8d9eaad8c265db350ce7416c99ba6a96c820317866bc59f94aaf8a\nwithdrawal: 0x5a930eb72d8528e4cfac7fb90a444c1df6cd48d4d53e3b31d5fe4a1176726fe3\nLive synthetic deposit, transfer and withdrawal completed.\nReceipts saved to /tmp/ledgerbank-cli-um92t4.\nVerify receipt-transfer.json and receipt-tampered.json in the app to compare the results.\n",
+      "stderr": ""
+    },
+    {
+      "script": "scripts/verify-receipt.mjs",
+      "args": [
+        "/tmp/ledgerbank-cli-um92t4/receipt-transfer.json",
+        "--rpc",
+        "http://127.0.0.1:40525",
+        "--bank",
+        "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+        "--chain",
+        "31337"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"valid\": true,\n  \"status\": \"VERIFIED\",\n  \"message\": \"Receipt exactly matches the mined transaction.\",\n  \"transactionHash\": \"0xdc303475ae8d9eaad8c265db350ce7416c99ba6a96c820317866bc59f94aaf8a\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "script": "scripts/verify-receipt.mjs",
+      "args": [
+        "/tmp/ledgerbank-cli-um92t4/receipt-tampered.json",
+        "--rpc",
+        "http://127.0.0.1:40525",
+        "--bank",
+        "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+        "--chain",
+        "31337"
+      ],
+      "exitCode": 2,
+      "stdout": "{\n  \"valid\": false,\n  \"status\": \"ALTERED\",\n  \"message\": \"Receipt fields do not match the blockchain.\",\n  \"transactionHash\": \"0xdc303475ae8d9eaad8c265db350ce7416c99ba6a96c820317866bc59f94aaf8a\"\n}\n",
+      "stderr": ""
+    }
+  ]
+}

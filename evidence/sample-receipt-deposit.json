@@ -1,0 +1,23 @@
+{
+  "schema": "LedgerBankReceipt/1",
+  "chainId": 31337,
+  "bank": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+  "transactionHash": "0x974597f6423029387a28dc7cb1982a46f349b8000991c940345a83d161b3685f",
+  "blockHash": "0xf983bd0f616cc83d8deef5f2b6c4c085edd72f165b40ef7d2f0b0837c369c9c8",
+  "blockNumber": 142,
+  "status": "MINED",
+  "timestamp": 1788446691,
+  "initiator": "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0",
+  "operation": "DEPOSIT",
+  "sequence": "65",
+  "sender": "0x0000000000000000000000000000000000000000",
+  "recipient": "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0",
+  "amountWei": "100000000000000000",
+  "senderBalanceAfterWei": "0",
+  "recipientBalanceAfterWei": "11150000000000000000",
+  "requestId": "0xe6c3548b85e840ecb677630494d45b80f33d1b6be345c6048822b9a1049f00ef",
+  "memoHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "gasUsed": "70531",
+  "effectiveGasPriceWei": "2000000000",
+  "feeWei": "141062000000000"
+}

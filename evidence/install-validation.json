@@ -1,0 +1,10 @@
+{
+  "executedAt": "2026-09-03T14:55:34.496720+00:00",
+  "command": "npm ci --no-audit --no-fund",
+  "exitCode": 0,
+  "packagesInstalled": 422,
+  "platform": "Linux x64",
+  "node": "v24.19.0",
+  "cleanDirectory": true,
+  "notes": "Normalized dependency lock; Windows execution not tested."
+}

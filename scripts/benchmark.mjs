@@ -1,0 +1,23 @@
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {fork} from 'node:child_process';
+fs.mkdirSync('evidence',{recursive:true});const startedAt=new Date().toISOString();
+function stats(values){const s=[...values].sort((a,b)=>a-b),n=s.length;return{n,mean:s.reduce((a,b)=>a+b,0)/n,median:n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2,min:s[0],max:s.at(-1),p95:s[Math.ceil(n*.95)-1]};}
+async function run(args){return new Promise((resolve,reject)=>{
+  let result,stderr='';const child=fork(new URL('./benchmark-worker.mjs',import.meta.url),[JSON.stringify(args)],{stdio:['ignore','ignore','pipe','ipc']});child.stderr.on('data',data=>stderr+=data);child.on('message',value=>result=value);child.on('error',reject);
+  const timeout=setTimeout(()=>{child.kill();reject(new Error('Benchmark worker timed out.'));},180000);
+  child.on('exit',code=>{clearTimeout(timeout);if(code!==0||!result||result.error)reject(new Error(result?.error||stderr||'Worker failed'));else resolve(result);});
+});}
+const workflow=await run({mode:'workflow'});console.log('Workflow: 20 measured deposits, withdrawals and transfers each, after two warmups per operation.');
+const scenarios=[];
+for(const [volume,concurrency] of [[30,4],[60,4],[120,4],[120,1],[120,8]])for(let repeat=1;repeat<=3;repeat++){
+  const result=await run({mode:'load',volume,concurrency,repeat});scenarios.push(result);console.log(`N${volume}/C${concurrency}/R${repeat}: ${result.successes}/${volume}, ${result.tps.toFixed(2)} TPS, CPU ${result.resources.cpuPercentOneCore.toFixed(1)}% of one core, sampled RSS ${result.resources.sampledPeakRssMiB.toFixed(1)} MiB.`);
+}
+const transactions=[...workflow.transactions.map(r=>({...r,scenario:'workflow'})),...scenarios.flatMap(s=>s.transactions.map(r=>({...r,scenario:`N${s.volume}-C${s.concurrency}-R${s.repeat}`})))];
+const gas={};for(const kind of [...new Set(transactions.map(r=>r.kind))]){const rows=transactions.filter(r=>r.kind===kind&&r.success);gas[kind]={gas:stats(rows.map(r=>Number(r.gasUsed))),feeEth:stats(rows.map(r=>Number(r.feeWei)/1e18))};}
+const financial=transactions.filter(r=>['deposit','withdrawal','transfer'].includes(r.kind));
+const result={startedAt,finishedAt:new Date().toISOString(),environment:{node:process.version,platform:process.platform,architecture:process.arch,cpu:os.cpus()[0]?.model,logicalCpus:os.cpus().length,memoryGiB:os.totalmem()/2**30,ganache:'7.9.2',ethers:'6.15.0',solidity:'0.8.30',chainId:31337,hardfork:'shanghai',gasPriceWei:'2000000000',blockIntervalSeconds:.25,confirmations:1,transport:'Localhost JSON-RPC; Ganache Node.js fallback'},methodology:{workflowTrialsPerOperation:20,warmupsPerOperation:2,volumes:[30,60,120],volumeConcurrency:4,concurrencyValues:[1,4,8],concurrencyVolume:120,repeats:3,mix:'Equal deposit, withdrawal and internal transfer counts',resourceSamplingMs:50,isolation:'Every scenario in a fresh Node process and fresh chain; startup and enrollment excluded from timed load',scope:'Resource figures include EVM and workload driver, plus HTTP server in workflow mode. They exclude browser and parent orchestrator. Shared host, no CPU reservation.'},workflow,scenarios,gas,averageFinancialTransactionFeeEth:stats(financial.map(r=>Number(r.feeWei)/1e18)),transactions};
+fs.writeFileSync('evidence/benchmark-results.json',JSON.stringify(result,null,2));
+const fields=['kind','scenario','load','volume','concurrency','repeat','index','transactionHash','blockNumber','gasUsed','gasPriceWei','feeWei','submissionMs','confirmationWaitMs','transactionLatencyMs','success'];
+fs.writeFileSync('evidence/transactions.csv',[fields.join(','),...transactions.map(r=>fields.map(k=>String(r[k]??'')).join(','))].join('\n')+'\n');
+fs.writeFileSync('evidence/scalability.csv','volume,concurrency,repeat,successes,durationSeconds,tps,successRate,cpuPercentOneCore,cpuPercentAllLogicalCpus,startRssMiB,endRssMiB,sampledPeakRssMiB\n'+scenarios.map(s=>[s.volume,s.concurrency,s.repeat,s.successes,s.durationSeconds,s.tps,s.successRate,s.resources.cpuPercentOneCore,s.resources.cpuPercentAllLogicalCpus,s.resources.startRssMiB,s.resources.endRssMiB,s.resources.sampledPeakRssMiB].join(',')).join('\n')+'\n');
+fs.writeFileSync('evidence/demonstration.json',JSON.stringify(workflow.demonstration,null,2));for(const [kind,receipt] of Object.entries(workflow.demonstration.samples))fs.writeFileSync(`evidence/sample-receipt-${kind}.json`,JSON.stringify(receipt,null,2));fs.writeFileSync('evidence/sample-receipt-tampered.json',JSON.stringify(workflow.demonstration.tampered,null,2));
+console.log(`Saved ${transactions.length} receipts and ${scenarios.length} workload/resource runs.`);if(scenarios.some(s=>s.successRate<100))process.exitCode=1;
